@@ -61,3 +61,32 @@ WHERE DATE_PART('year',
 							r.rental_date) = 2005
 GROUP BY 1
 ORDER BY 2 DESC;
+
+
+
+(3) Third Query
+This query returns the total total_number_of_rentals based on specially designed
+category extracted from the special_features column
+this category was created by counting the number of special features that appeared
+in a the special_features column of film table
+
+WITH t1 AS
+	(select r.rental_id,
+			f.title movie_title,
+			f.special_features,
+			CARDINALITY(f.special_features) num_of_feats
+		FROM film f
+		JOIN inventory i ON i.film_id = f.film_id
+		JOIN rental r ON r.inventory_id = i.inventory_id),
+	t2 AS
+	(select movie_title,
+			(CASE
+								WHEN num_of_feats = 1 THEN 'Single Special Feature'
+								WHEN num_of_feats > 1 THEN 'Multiple Special Feature'
+				END) features_type
+		FROM t1)
+SELECT features_type special_feature_category,
+	COUNT(t2) total_number_of_rentals
+FROM t2
+GROUP BY 1
+ORDER BY 2 DESC;
