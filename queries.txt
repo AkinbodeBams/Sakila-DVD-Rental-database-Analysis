@@ -90,3 +90,15 @@ SELECT features_type special_feature_category,
 FROM t2
 GROUP BY 1
 ORDER BY 2 DESC;
+
+(4) Fourth query
+the Fourth query simply total_number_of_rentals by cities
+SELECT COUNT(r) num_of_orders,
+	cc.city cities
+FROM rental r
+JOIN customer c ON r.customer_id = c.customer_id
+JOIN address a ON c.address_id = a.address_id
+JOIN city cc ON cc.city_id = a.city_id
+GROUP BY 2
+ORDER BY 1 DESC
+LIMIT 5;
