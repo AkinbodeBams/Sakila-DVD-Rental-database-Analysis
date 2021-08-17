@@ -1,8 +1,8 @@
 (1) First Query
 -- This query calculates the difference in the time it takes for customers to
 return rented dvds , it then groups them to
--- 		(i)customers who return thier dvd with the alloted "return day" as ""On- time Customers""
--- 		(ii)customers who spent more than the alloted time as ""Runaways""
+-- 		(i)customers who return their dvd with the allotted "return day" as ""On- time Customers""
+-- 		(ii)customers who spent more than the allotted time as ""Runaways""
 -- 		(iii)customers who never returned rented dvds as ""Late returners""
 
 with t1 as (SELECT concat(c.first_name,
