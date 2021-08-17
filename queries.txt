@@ -1,9 +1,11 @@
+(1) First Query
+-- This query calculates the difference in the time it takes for customers to
+return rented dvds , it then groups them to
+-- 		(i)customers who return thier dvd with the alloted "return day" as ""On- time Customers""
+-- 		(ii)customers who spent more than the alloted time as ""Runaways""
+-- 		(iii)customers who never returned rented dvds as ""Late returners""
 
-/* Query 1 - query used for first insight */
-
-
-WITH t1 AS
-	(SELECT concat(c.first_name,
+with t1 as (SELECT concat(c.first_name,
 
 										' ',
 										c.last_name) customer_name,
@@ -40,12 +42,13 @@ WITH t1 AS
 SELECT customer_category,
 	customer_count,
 	ROUND(customer_count::float / (SUM(customer_count) OVER()) * 100) AS percentage
-FROM t3;		
+FROM t3;
 
 
 
+(2) Second query
 
-/* Query 2 - query used for second insight */
+This query returns the total number of orders made across all viewing ratings
 
 
 SELECT f.rating ratings,
@@ -58,40 +61,3 @@ WHERE DATE_PART('year',
 							r.rental_date) = 2005
 GROUP BY 1
 ORDER BY 2 DESC;
-
-
-/* Query 3- query used for third insight */
-
-WITH t1 AS
-	(select r.rental_id,
-			f.title movie_title,
-			f.special_features,
-			CARDINALITY(f.special_features) num_of_feats
-		FROM film f
-		JOIN inventory i ON i.film_id = f.film_id
-		JOIN rental r ON r.inventory_id = i.inventory_id),
-	t2 AS
-	(select movie_title,
-			(CASE
-								WHEN num_of_feats = 1 THEN 'Single Special Feature'
-								WHEN num_of_feats > 1 THEN 'Multiple Special Feature'
-				END) features_type
-		FROM t1)
-SELECT features_type special_feature_category,
-	COUNT(t2) total_number_of_rentals
-FROM t2
-GROUP BY 1
-ORDER BY 2 DESC;
-		
-
-/* Query 4- query used for fourth insight */
-
-SELECT COUNT(r) num_of_orders,
-	cc.city cities
-FROM rental r
-JOIN customer c ON r.customer_id = c.customer_id
-JOIN address a ON c.address_id = a.address_id
-JOIN city cc ON cc.city_id = a.city_id
-GROUP BY 2
-ORDER BY 1 DESC
-LIMIT 5;
